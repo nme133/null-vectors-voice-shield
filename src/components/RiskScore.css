@@ -1,0 +1,175 @@
+.risk-score {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 420px;
+}
+
+.risk-score-header {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.risk-score-header h2 {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.risk-score-idle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  width: 100%;
+  text-align: center;
+}
+
+.idle-message {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.risk-score-idle p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.risk-score-container {
+  width: 100%;
+  max-width: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.risk-score-container.low {
+  color: var(--status-low);
+}
+
+.risk-score-container.medium {
+  color: var(--status-medium);
+}
+
+.risk-score-container.high {
+  color: var(--status-high);
+}
+
+.risk-score-container.critical {
+  color: var(--status-critical);
+}
+
+.risk-gauge {
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.risk-score-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.score-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: currentColor;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0px;
+}
+
+.score-max {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.risk-level-label {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid currentColor;
+  opacity: 0.8;
+}
+
+.risk-level-label.low {
+  color: var(--status-low);
+}
+
+.risk-level-label.medium {
+  color: var(--status-medium);
+}
+
+.risk-level-label.high {
+  color: var(--status-high);
+}
+
+.risk-level-label.critical {
+  color: var(--status-critical);
+}
+
+.risk-legend {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.legend-color {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legend-color.low {
+  background-color: var(--status-low);
+}
+
+.legend-color.medium {
+  background-color: var(--status-medium);
+}
+
+.legend-color.high {
+  background-color: var(--status-high);
+}
+
+.legend-color.critical {
+  background-color: var(--status-critical);
+}
+
+.legend-text {
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}

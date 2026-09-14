@@ -1,0 +1,168 @@
+.event-timeline {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.timeline-header {
+  margin-bottom: 1.25rem;
+}
+
+.timeline-header h2 {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.timeline-idle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.timeline-idle p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.timeline-container {
+  position: relative;
+}
+
+/* Vertical line */
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    var(--status-critical),
+    var(--status-high),
+    transparent
+  );
+}
+
+.timeline-item {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-marker {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.marker-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: var(--bg-secondary);
+}
+
+.marker-dot.info {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+.marker-dot.warning {
+  border-color: var(--status-high);
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.3);
+}
+
+.marker-dot.critical {
+  border-color: var(--status-critical);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+.marker-dot::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+  position: absolute;
+}
+
+.marker-dot.info {
+  color: var(--accent-blue);
+}
+
+.marker-dot.warning {
+  color: var(--status-high);
+}
+
+.marker-dot.critical {
+  color: var(--status-critical);
+}
+
+.timeline-content {
+  flex: 1;
+  padding-top: 0.25rem;
+}
+
+.timeline-timestamp {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.timeline-message {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.timeline-message.info {
+  color: var(--accent-blue);
+}
+
+.timeline-message.warning {
+  color: var(--status-high);
+}
+
+.timeline-message.critical {
+  color: var(--status-critical);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .timeline-item {
+    gap: 1rem;
+  }
+
+  .marker-dot {
+    width: 20px;
+    height: 20px;
+  }
+
+  .timeline-message {
+    font-size: 0.85rem;
+  }
+}
