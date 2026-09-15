@@ -1,10 +1,33 @@
-// Mock data for VoxShield Dashboard
-// This data is structured to be easily replaced with WebSocket messages from the backend
+/**
+ * Data contracts and demo state definitions for Null Vectors — Voice Shield.
+ * 
+ * Future WebSocket payload shape matches BackendPayload:
+ * {
+ *   riskScore: number,
+ *   riskLevel: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL",
+ *   voice: { score: number, isSpoof: boolean, confidence: string, model: string },
+ *   conversation: { urgency: number, authorityImpersonation: number, financialRequest: number, credentialRequest: number, threat: number },
+ *   transcript: TranscriptMessage[],
+ *   events: RiskFeedEvent[],
+ *   recommendation: { action: string, description: string }
+ * }
+ */
 
-export interface TimelineEvent {
+export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+
+export interface TranscriptMessage {
+  id: string;
+  timestamp: string;
+  speaker: 'caller' | 'user';
+  text: string;
+}
+
+export interface RiskFeedEvent {
+  id: string;
   timestamp: string;
   message: string;
-  type: 'info' | 'warning' | 'critical';
+  severity: 'info' | 'warning' | 'critical' | 'success';
+  source?: 'audio' | 'voice' | 'nlp' | 'engine';
 }
 
 export interface RiskFactor {
@@ -14,15 +37,43 @@ export interface RiskFactor {
   description: string;
 }
 
-export interface TranscriptMessage {
-  id: string;
-  timestamp: string;
-  speaker: 'caller' | 'user';
-  text: string;
+export interface VoiceAnalysisData {
+  score: number; // 0-100
+  isSpoof: boolean;
+  confidence: string;
+  model: string;
+  status?: 'spoof' | 'suspicious' | 'bona_fide' | 'insufficient_speech';
+}
+
+export interface ConversationAnalysisData {
+  urgency: number; // 0-100 or 0-1
+  authorityImpersonation: number;
+  financialRequest: number;
+  credentialRequest: number;
+  otpRequest?: number;
+  threat: number;
+  secrecy?: number;
+  persuasion?: number;
+  repeatedConfirmation?: number;
+  confidence?: number;
+  reasons?: string[];
+}
+
+export interface BackendPayload {
+  riskScore: number;
+  riskLevel: RiskLevel;
+  voice: VoiceAnalysisData;
+  conversation: ConversationAnalysisData;
+  transcript: TranscriptMessage[];
+  events: RiskFeedEvent[];
+  recommendation: {
+    action: string;
+    description: string;
+  };
 }
 
 export interface DashboardState {
-  // Connection
+  // Connection & Active View
   connectionStatus: 'online' | 'offline';
   
   // Call Status
@@ -31,36 +82,26 @@ export interface DashboardState {
   callerIdentity: string;
   audioStreamActive: boolean;
   
-  // Risk Score
+  // Core Threat Score
   riskScore: number; // 0-100
+  riskLevel: RiskLevel;
   
-  // Voice Authenticity
-  voiceAuthModel: string;
-  voiceAuthScore: number; // 0-100 model score
-  voiceAuthStatus: 'authentic' | 'spoof_suspected' | 'spoof_detected';
-  voiceAuthConfidence: string; // Confidence level
+  // Model Data
+  voice: VoiceAnalysisData;
+  conversation: ConversationAnalysisData;
   
-  // Transcript and Conversation Analysis
+  // Feed & Recommendation
   transcript: TranscriptMessage[];
-  detectedSignals: {
-    authorityImpersonation: boolean;
-    urgency: boolean;
-    financialRequest: boolean;
-    threatFear: boolean;
-    instructionToTransfer: boolean;
+  events: RiskFeedEvent[];
+  recommendation: {
+    action: string;
+    description: string;
   };
   
-  // Risk Factors
+  // Risk Factors breakdown (for Analysis tab)
   riskFactors: RiskFactor[];
   
-  // Recommended Action
-  recommendedAction: string;
-  actionDescription: string;
-  
-  // Event Timeline
-  timeline: TimelineEvent[];
-  
-  // System Status
+  // System Health
   systemComponents: {
     voiceAnalysis: 'active' | 'inactive';
     speechTranscription: 'active' | 'inactive';
@@ -69,168 +110,371 @@ export interface DashboardState {
   };
 }
 
-export const getIdleDashboardState = (): DashboardState => {
-  return {
-    connectionStatus: 'online',
-    
-    callStatus: 'idle',
-    callDuration: 0,
-    callerIdentity: 'No caller',
-    audioStreamActive: false,
-    
-    riskScore: 0,
-    
-    voiceAuthModel: 'Spectra-AASIST3',
-    voiceAuthScore: 0,
-    voiceAuthStatus: 'authentic',
-    voiceAuthConfidence: 'N/A',
-    
-    transcript: [],
-    
-    detectedSignals: {
-      authorityImpersonation: false,
-      urgency: false,
-      financialRequest: false,
-      threatFear: false,
-      instructionToTransfer: false
-    },
-    
-    riskFactors: [],
-    
-    recommendedAction: '',
-    actionDescription: '',
-    
-    timeline: [],
-    
-    systemComponents: {
-      voiceAnalysis: 'inactive',
-      speechTranscription: 'inactive',
-      conversationAnalysis: 'inactive',
-      riskEngine: 'inactive'
-    }
-  };
+/**
+ * Determine risk level from numeric score (0-100)
+ */
+export const getRiskLevel = (score: number): RiskLevel => {
+  if (score < 30) return 'LOW';
+  if (score < 60) return 'MEDIUM';
+  if (score < 80) return 'HIGH';
+  return 'CRITICAL';
 };
 
-export const getMockDashboardState = (): DashboardState => {
-  return {
-    connectionStatus: 'online',
-    
-    callStatus: 'live',
-    callDuration: 43,
-    callerIdentity: 'Unknown Caller',
-    audioStreamActive: true,
-    
-    riskScore: 87,
-    
-    voiceAuthModel: 'Spectra-AASIST3',
-    voiceAuthScore: 78,
-    voiceAuthStatus: 'spoof_suspected',
-    voiceAuthConfidence: 'High',
-    
-    transcript: [
-      {
-        id: '1',
-        timestamp: '00:12',
-        speaker: 'caller',
-        text: 'Hello, this is your bank\'s security department.'
-      },
-      {
-        id: '2',
-        timestamp: '00:18',
-        speaker: 'caller',
-        text: 'We detected suspicious activity on your account.'
-      },
-      {
-        id: '3',
-        timestamp: '00:27',
-        speaker: 'caller',
-        text: 'You need to verify your account immediately to prevent fraud.'
-      },
-      {
-        id: '4',
-        timestamp: '00:34',
-        speaker: 'caller',
-        text: 'Please transfer the funds to this secure account: 5241-8837-2910-3847'
-      }
-    ],
-    
-    detectedSignals: {
-      authorityImpersonation: true,
-      urgency: true,
-      financialRequest: true,
-      threatFear: true,
-      instructionToTransfer: true
+/**
+ * Pure Idle state - Normal startup with no active calls or simulated data
+ */
+export const getIdleDashboardState = (): DashboardState => ({
+  connectionStatus: 'online',
+  callStatus: 'idle',
+  callDuration: 0,
+  callerIdentity: 'No Active Call',
+  audioStreamActive: false,
+  
+  riskScore: 0,
+  riskLevel: 'LOW',
+  
+  voice: {
+    score: 0,
+    isSpoof: false,
+    confidence: 'IDLE',
+    model: 'Spectra-AASIST3'
+  },
+  
+  conversation: {
+    urgency: 0,
+    authorityImpersonation: 0,
+    financialRequest: 0,
+    credentialRequest: 0,
+    threat: 0
+  },
+  
+  transcript: [],
+  events: [],
+  recommendation: {
+    action: '',
+    description: ''
+  },
+  
+  riskFactors: [],
+  
+  systemComponents: {
+    voiceAnalysis: 'inactive',
+    speechTranscription: 'inactive',
+    conversationAnalysis: 'inactive',
+    riskEngine: 'inactive'
+  }
+});
+
+/**
+ * Step progression for Demo Mode (SIH Presentation Simulation)
+ */
+export interface DemoStep {
+  step: number;
+  timeOffsetSec: number;
+  duration: number;
+  callerIdentity: string;
+  riskScore: number;
+  voice: VoiceAnalysisData;
+  conversation: ConversationAnalysisData;
+  transcriptNewMessage?: TranscriptMessage;
+  eventsNewEvent?: RiskFeedEvent;
+  recommendation?: {
+    action: string;
+    description: string;
+  };
+  riskFactors: RiskFactor[];
+}
+
+export const DEMO_PROGRESSION: DemoStep[] = [
+  // Step 0: Call incoming and connects, normal greeting
+  {
+    step: 0,
+    timeOffsetSec: 0,
+    duration: 3,
+    callerIdentity: 'Unknown (+1 800-432-1000)',
+    riskScore: 14,
+    voice: {
+      score: 12,
+      isSpoof: false,
+      confidence: 'Normal Acoustic',
+      model: 'Spectra-AASIST3'
     },
-    
+    conversation: {
+      urgency: 10,
+      authorityImpersonation: 15,
+      financialRequest: 0,
+      credentialRequest: 0,
+      threat: 0
+    },
+    transcriptNewMessage: {
+      id: 'demo-1',
+      timestamp: '00:02',
+      speaker: 'caller',
+      text: "Hello, this is officer Davies calling from Federal Trust Bank fraud division."
+    },
+    eventsNewEvent: {
+      id: 'evt-1',
+      timestamp: '00:02',
+      message: 'Incoming voice call connected',
+      severity: 'info',
+      source: 'audio'
+    },
+    recommendation: {
+      action: 'MONITORING CALL',
+      description: 'Listening for speech biometric anomalies and conversational social-engineering cues.'
+    },
+    riskFactors: [
+      {
+        id: 'voice-auth',
+        name: 'Voice Biometrics',
+        status: 'clear',
+        description: 'Analyzing spectral harmonics and phase distribution.'
+      }
+    ]
+  },
+  // Step 1: Acoustic spoof signs detected
+  {
+    step: 1,
+    timeOffsetSec: 3,
+    duration: 7,
+    callerIdentity: 'Federal Trust Bank (Unverified)',
+    riskScore: 42,
+    voice: {
+      score: 64,
+      isSpoof: true,
+      confidence: 'Acoustic Anomaly Detected',
+      model: 'Spectra-AASIST3'
+    },
+    conversation: {
+      urgency: 25,
+      authorityImpersonation: 55,
+      financialRequest: 10,
+      credentialRequest: 0,
+      threat: 0
+    },
+    transcriptNewMessage: {
+      id: 'demo-2',
+      timestamp: '00:06',
+      speaker: 'caller',
+      text: "We have intercepted an unauthorized wire attempt on your account for $8,920."
+    },
+    eventsNewEvent: {
+      id: 'evt-2',
+      timestamp: '00:06',
+      message: 'Acoustic spoof indicators detected (synthetic voice artifact)',
+      severity: 'warning',
+      source: 'voice'
+    },
+    recommendation: {
+      action: 'EXERCISE CAUTION',
+      description: 'Voice frequency anomalies detected. Do not share sensitive personal information.'
+    },
+    riskFactors: [
+      {
+        id: 'voice-spoofing',
+        name: 'Voice Spoofing Indicators',
+        status: 'suspected',
+        description: 'Spectra-AASIST3 detected phase discontinuities and synthetic vocoder spectral cues.'
+      },
+      {
+        id: 'authority-claim',
+        name: 'Institution Identity Claim',
+        status: 'suspected',
+        description: 'Caller claims official banking identity without verifiable cryptographic signature.'
+      }
+    ]
+  },
+  // Step 2: Authority Impersonation & Urgency pressure
+  {
+    step: 2,
+    timeOffsetSec: 7,
+    duration: 12,
+    callerIdentity: 'Federal Trust Bank (Spoof Suspected)',
+    riskScore: 71,
+    voice: {
+      score: 79,
+      isSpoof: true,
+      confidence: 'High Spoof Probability',
+      model: 'Spectra-AASIST3'
+    },
+    conversation: {
+      urgency: 85,
+      authorityImpersonation: 88,
+      financialRequest: 30,
+      credentialRequest: 40,
+      threat: 65
+    },
+    transcriptNewMessage: {
+      id: 'demo-3',
+      timestamp: '00:11',
+      speaker: 'caller',
+      text: "You must confirm your authorization immediately, or we will freeze all accounts in 5 minutes."
+    },
+    eventsNewEvent: {
+      id: 'evt-3',
+      timestamp: '00:11',
+      message: 'High urgency & threat language detected (GPT-OSS)',
+      severity: 'warning',
+      source: 'nlp'
+    },
+    recommendation: {
+      action: 'SUSPICIOUS CALL — DO NOT COMPLY',
+      description: 'Severe urgency and authority pressure detected. Financial institutions never demand instant action under threat of asset freeze.'
+    },
     riskFactors: [
       {
         id: 'voice-spoofing',
         name: 'Voice Spoofing',
         status: 'detected',
-        description: 'Audio analysis detected artificial voice characteristics and frequency anomalies consistent with voice cloning.'
+        description: 'Spectra-AASIST3 confirmed synthetic audio characteristics with 79% model confidence.'
       },
       {
-        id: 'social-engineering',
-        name: 'Social Engineering',
+        id: 'urgency-tactic',
+        name: 'Urgency / Time Pressure',
         status: 'detected',
-        description: 'Conversation exhibits classic social engineering patterns including authority impersonation and urgency tactics.'
-      },
-      {
-        id: 'urgency-signal',
-        name: 'Urgency',
-        status: 'detected',
-        description: 'Repeated use of time-sensitive language to pressure immediate action.'
-      },
-      {
-        id: 'financial-request',
-        name: 'Financial Request',
-        status: 'detected',
-        description: 'Caller explicitly requesting fund transfer to suspicious account number.'
+        description: 'Artificial deadline (5-minute freeze) used to bypass critical thinking.'
       },
       {
         id: 'authority-impersonation',
         name: 'Authority Impersonation',
         status: 'detected',
-        description: 'Caller claiming to represent official banking institution.'
+        description: 'Impersonating bank security official.'
       }
-    ],
-    
-    recommendedAction: 'DO NOT TRANSFER FUNDS',
-    actionDescription: 'This call exhibits multiple indicators of a sophisticated voice cloning attack combined with social engineering. Independently verify the caller by contacting your bank directly using the official phone number on your bank card or statement.',
-    
-    timeline: [
+    ]
+  },
+  // Step 3: Financial Request / Instruction to wire money
+  {
+    step: 3,
+    timeOffsetSec: 12,
+    duration: 18,
+    callerIdentity: 'FLAGGED: Voice Cloning Attack',
+    riskScore: 89,
+    voice: {
+      score: 88,
+      isSpoof: true,
+      confidence: 'Cloned Voice Confirmed',
+      model: 'Spectra-AASIST3'
+    },
+    conversation: {
+      urgency: 95,
+      authorityImpersonation: 94,
+      financialRequest: 92,
+      credentialRequest: 70,
+      threat: 85
+    },
+    transcriptNewMessage: {
+      id: 'demo-4',
+      timestamp: '00:16',
+      speaker: 'caller',
+      text: "Transfer remaining funds into our Federal Reserve Escrow Account 4920-1102-8831 immediately."
+    },
+    eventsNewEvent: {
+      id: 'evt-4',
+      timestamp: '00:16',
+      message: 'Financial fund transfer instruction detected',
+      severity: 'critical',
+      source: 'nlp'
+    },
+    recommendation: {
+      action: 'DO NOT TRANSFER FUNDS',
+      description: 'Active voice cloning & financial scam detected. Hang up immediately. Verify caller via the phone number on your card.'
+    },
+    riskFactors: [
       {
-        timestamp: '00:12',
-        message: 'Voice analysis started',
-        type: 'info'
+        id: 'voice-spoofing',
+        name: 'Voice Cloning Attack',
+        status: 'detected',
+        description: 'Synthetic voice model matched against deepfake acoustic signature.'
       },
       {
-        timestamp: '00:18',
-        message: 'Suspicious voice characteristics detected',
-        type: 'warning'
+        id: 'financial-instruction',
+        name: 'Fund Transfer Instruction',
+        status: 'detected',
+        description: 'Explicit instruction to divert funds to an external routing number.'
       },
       {
-        timestamp: '00:27',
-        message: 'Urgency language detected in conversation',
-        type: 'warning'
-      },
-      {
-        timestamp: '00:34',
-        message: 'Financial request detected',
-        type: 'critical'
-      },
-      {
-        timestamp: '00:41',
-        message: 'Risk score increased to 87',
-        type: 'critical'
-      },
-      {
-        timestamp: '00:43',
-        message: 'HIGH RISK alert triggered',
-        type: 'critical'
+        id: 'urgency-threat',
+        name: 'Urgency & Coercion',
+        status: 'detected',
+        description: 'High-pressure coercion tactics identified.'
       }
-    ],
-    
+    ]
+  },
+  // Step 4: Final Critical Escalation
+  {
+    step: 4,
+    timeOffsetSec: 18,
+    duration: 25,
+    callerIdentity: 'FLAGGED: CRITICAL IMPERSONATION',
+    riskScore: 96,
+    voice: {
+      score: 94,
+      isSpoof: true,
+      confidence: 'Deepfake Confirmed (94%)',
+      model: 'Spectra-AASIST3'
+    },
+    conversation: {
+      urgency: 98,
+      authorityImpersonation: 98,
+      financialRequest: 98,
+      credentialRequest: 80,
+      threat: 90
+    },
+    eventsNewEvent: {
+      id: 'evt-5',
+      timestamp: '00:20',
+      message: 'Risk Engine escalated threat level to CRITICAL',
+      severity: 'critical',
+      source: 'engine'
+    },
+    recommendation: {
+      action: 'DO NOT TRANSFER FUNDS — TERMINATE CALL',
+      description: 'Multi-vector verification failure: Deepfake voice confirmed + Social engineering financial transfer demand.'
+    },
+    riskFactors: [
+      {
+        id: 'voice-spoofing',
+        name: 'Acoustic Voice Spoofing',
+        status: 'detected',
+        description: 'Spectra-AASIST3 deepfake detection score 94/100.'
+      },
+      {
+        id: 'social-engineering',
+        name: 'Multi-Vector Social Engineering',
+        status: 'detected',
+        description: 'Combined bank impersonation, urgency countdown, and fraudulent escrow routing.'
+      }
+    ]
+  }
+];
+
+/**
+ * Legacy getter for full mock state
+ */
+export const getMockDashboardState = (): DashboardState => {
+  const lastStep = DEMO_PROGRESSION[DEMO_PROGRESSION.length - 1];
+  const allMessages: TranscriptMessage[] = [];
+  const allEvents: RiskFeedEvent[] = [];
+
+  DEMO_PROGRESSION.forEach(s => {
+    if (s.transcriptNewMessage) allMessages.push(s.transcriptNewMessage);
+    if (s.eventsNewEvent) allEvents.push(s.eventsNewEvent);
+  });
+
+  return {
+    connectionStatus: 'online',
+    callStatus: 'live',
+    callDuration: 24,
+    callerIdentity: lastStep.callerIdentity,
+    audioStreamActive: true,
+    riskScore: lastStep.riskScore,
+    riskLevel: getRiskLevel(lastStep.riskScore),
+    voice: lastStep.voice,
+    conversation: lastStep.conversation,
+    transcript: allMessages,
+    events: allEvents,
+    recommendation: lastStep.recommendation!,
+    riskFactors: lastStep.riskFactors,
     systemComponents: {
       voiceAnalysis: 'active',
       speechTranscription: 'active',
@@ -240,14 +484,6 @@ export const getMockDashboardState = (): DashboardState => {
   };
 };
 
-export const getRiskLevel = (score: number): 'low' | 'medium' | 'high' | 'critical' => {
-  if (score < 30) return 'low';
-  if (score < 60) return 'medium';
-  if (score < 80) return 'high';
-  return 'critical';
-};
-
 export const getRiskLevelLabel = (score: number): string => {
-  const level = getRiskLevel(score);
-  return level.toUpperCase();
+  return getRiskLevel(score);
 };

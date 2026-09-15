@@ -1,8 +1,18 @@
-import { TimelineEvent } from '../data/mockData';
+import React from 'react';
+import { RiskFeedEvent } from '../data/mockData';
 import './EventTimeline.css';
 
+export interface LegacyTimelineEvent {
+  timestamp: string;
+  message: string;
+  type?: 'info' | 'warning' | 'critical';
+  id?: string;
+}
+
+export type AnyTimelineEvent = RiskFeedEvent | LegacyTimelineEvent;
+
 interface EventTimelineProps {
-  events: TimelineEvent[];
+  events: AnyTimelineEvent[];
 }
 
 export const EventTimeline: React.FC<EventTimelineProps> = ({ events }) => {
@@ -11,31 +21,57 @@ export const EventTimeline: React.FC<EventTimelineProps> = ({ events }) => {
   return (
     <div className="event-timeline">
       <div className="timeline-header">
-        <h2>Event Timeline</h2>
+        <div className="timeline-title-row">
+          <span className="timeline-icon">⏱</span>
+          <h2>Security Event Audit Log</h2>
+        </div>
+        <span className="timeline-count">{events.length} LOGGED EVENTS</span>
       </div>
       
       {isIdle ? (
         <div className="timeline-idle">
-          <p>Waiting for live analysis...</p>
+          <p>No audit events recorded yet. Stream is standing by.</p>
         </div>
       ) : (
         <div className="timeline-container">
-          {events.map((event, index) => (
-            <div
-              key={index}
-              className={`timeline-item ${event.type}`}
-            >
-              <div className="timeline-marker">
-                <div className={`marker-dot ${event.type}`}></div>
-              </div>
-              <div className="timeline-content">
-                <div className="timeline-timestamp">{event.timestamp}</div>
-                <div className={`timeline-message ${event.type}`}>
-                  {event.message}
+          {events.map((event, index) => {
+            const rawType =
+              'severity' in event
+                ? event.severity
+                : 'type' in event
+                  ? event.type
+                  : 'info';
+
+            const type =
+              rawType === 'critical'
+                ? 'critical'
+                : rawType === 'warning'
+                  ? 'warning'
+                  : 'info';
+
+            const source = 'source' in event ? event.source : undefined;
+            const eventKey = ('id' in event && event.id) ? event.id : `evt-${index}`;
+
+            return (
+              <div
+                key={eventKey}
+                className={`timeline-item ${type}`}
+              >
+                <div className="timeline-marker">
+                  <div className={`marker-dot ${type}`}></div>
+                </div>
+                <div className="timeline-content">
+                  <div className="timeline-meta-row">
+                    <span className="timeline-timestamp">{event.timestamp}</span>
+                    {source && <span className="timeline-source">[{source.toUpperCase()}]</span>}
+                  </div>
+                  <div className={`timeline-message ${type}`}>
+                    {event.message}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

@@ -1,124 +1,252 @@
-.header {
-  background-color: var(--bg-secondary);
+.app-header {
+  background: rgba(12, 16, 24, 0.92);
   border-bottom: 1px solid var(--border-color);
-  padding: 1.5rem 2rem;
+  backdrop-filter: blur(16px);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 50;
+  width: 100%;
 }
 
-.header-content {
-  max-width: 1400px;
+.header-inner {
+  max-width: 1440px;
   margin: 0 auto;
+  padding: 0.75rem 1.5rem;
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: 1.5rem;
+}
+
+/* Brand */
+.header-brand-block {
+  display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 12px;
 }
 
-.header-brand {
-  flex: 1;
+.brand-logo-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-cyan);
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.2);
 }
 
-.header-title {
-  font-size: 1.75rem;
+.brand-title-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.brand-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-name {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #f8fafc;
+}
+
+.brand-badge {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 1px;
-  color: #fff;
-  margin: 0;
-  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  letter-spacing: 0.08em;
+  color: var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.12);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  padding: 2px 6px;
+  border-radius: 3px;
 }
 
-.header-subtitle {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin: 0.25rem 0 0 0;
-  letter-spacing: 0.5px;
+.brand-tagline {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  font-weight: 500;
 }
 
-.header-status {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-}
-
-.connection-indicator {
+/* Nav Tabs */
+.header-nav {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 3px;
   border-radius: 6px;
-  font-size: 0.85rem;
+  border: 1px solid var(--border-light);
+}
+
+.nav-tab-btn {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  padding: 0.45rem 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
 }
 
-.connection-indicator.online {
-  color: var(--status-low);
-  border-color: rgba(34, 197, 94, 0.3);
-  background-color: rgba(34, 197, 94, 0.05);
+.nav-tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.connection-indicator.offline {
-  color: var(--status-critical);
-  border-color: rgba(239, 68, 68, 0.3);
-  background-color: rgba(239, 68, 68, 0.05);
+.nav-tab-btn.active {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.tab-indicator-line {
+  position: absolute;
+  bottom: 0;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: var(--accent-cyan);
+  border-radius: 1px;
+  box-shadow: 0 0 6px var(--accent-cyan);
+}
+
+/* Status Block */
+.header-status-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.demo-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 4px 8px;
+  border-radius: 4px;
+  animation: demo-glow 2s infinite ease-in-out;
+}
+
+@keyframes demo-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.2); }
+  50% { box-shadow: 0 0 10px 2px rgba(56, 189, 248, 0.3); }
+}
+
+.demo-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+}
+
+.status-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-light);
 }
 
 .status-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background-color: currentColor;
-  display: inline-block;
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background: var(--text-muted);
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+.status-pill-badge.online .status-dot {
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
 }
 
-.status-text {
-  display: inline;
+.status-pill-badge.offline .status-dot {
+  background: #ef4444;
 }
 
-.mic-indicator {
-  display: flex;
+.mic-pill-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-size: 0.85rem;
+  gap: 6px;
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.65rem;
   font-weight: 600;
-  color: var(--status-low);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
 }
 
-@media (max-width: 768px) {
-  .header-content {
-    flex-direction: column;
+.mic-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.mic-pill-badge.recording {
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.mic-pill-badge.recording .mic-dot {
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  animation: mic-blink 1.2s infinite;
+}
+
+@keyframes mic-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+@media (max-width: 1080px) {
+  .header-inner {
+    flex-wrap: wrap;
     gap: 1rem;
   }
-
-  .header-title {
-    font-size: 1.5rem;
-  }
-
-  .header-status {
+  .header-nav {
+    order: 3;
     width: 100%;
-    gap: 1rem;
-    justify-content: space-between;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .brand-tagline {
+    display: none;
+  }
+  .nav-tab-btn {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.65rem;
   }
 }

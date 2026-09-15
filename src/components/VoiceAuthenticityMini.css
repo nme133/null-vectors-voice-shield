@@ -1,0 +1,217 @@
+.voice-auth-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 210px;
+  max-width: 255px;
+  padding: 0.9rem 1rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  align-self: center;
+  justify-content: center;
+}
+
+.vam-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.vam-title {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+
+.vam-badge {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.vam-status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.vam-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.vam-status-label {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+}
+
+.voice-auth-mini.human .vam-dot {
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.voice-auth-mini.human .vam-status-label {
+  color: #10b981;
+}
+
+.voice-auth-mini.suspicious .vam-dot {
+  background: #f97316;
+  box-shadow: 0 0 8px #f97316;
+}
+
+.voice-auth-mini.suspicious .vam-status-label {
+  color: #f97316;
+}
+
+.voice-auth-mini.spoof .vam-dot {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+  animation: vam-spoof-pulse 1.6s infinite ease-in-out;
+}
+
+.voice-auth-mini.spoof .vam-status-label {
+  color: #ef4444;
+}
+
+.voice-auth-mini.listening .vam-dot {
+  background: #38bdf8;
+  box-shadow: 0 0 8px #38bdf8;
+  animation: vam-listening-pulse 2s infinite ease-in-out;
+}
+
+.voice-auth-mini.listening .vam-status-label,
+.voice-auth-mini.standby .vam-status-label {
+  color: #38bdf8;
+}
+
+@keyframes vam-listening-pulse {
+  0%, 100% { box-shadow: 0 0 3px #38bdf8; }
+  50% { box-shadow: 0 0 10px 2px #38bdf8; }
+}
+
+@keyframes vam-spoof-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.vam-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.vam-meter-track {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.vam-meter-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease, background-color 0.3s ease;
+}
+
+.vam-meter-fill.standby {
+  width: 0;
+  background: var(--text-muted);
+}
+
+.vam-meter-fill.human {
+  background: linear-gradient(90deg, #059669, #10b981);
+}
+
+.vam-meter-fill.suspicious {
+  background: linear-gradient(90deg, #ea580c, #f97316);
+}
+
+.vam-meter-fill.spoof {
+  background: linear-gradient(90deg, #b91c1c, #ef4444);
+}
+
+.vam-meter-fill.listening {
+  background: var(--text-muted);
+  opacity: 0.5;
+}
+
+.vam-meter-scale {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.vam-score-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.vam-score {
+  font-family: 'Courier New', monospace;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.voice-auth-mini.human .vam-score { color: #10b981; }
+.voice-auth-mini.suspicious .vam-score { color: #f97316; }
+.voice-auth-mini.spoof .vam-score { color: #ef4444; }
+.voice-auth-mini.standby .vam-score,
+.voice-auth-mini.listening .vam-score { color: var(--text-muted); }
+.vam-score-idle {
+  font-size: 1.2rem;
+  opacity: 0.5;
+}
+
+.vam-score-caption {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.vam-description {
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.vam-note {
+  font-size: 0.62rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 2px solid var(--accent-blue);
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .voice-auth-mini {
+    max-width: 100%;
+    width: 100%;
+    align-self: auto;
+  }
+}

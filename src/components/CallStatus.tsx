@@ -1,3 +1,4 @@
+import React from 'react';
 import './CallStatus.css';
 
 interface CallStatusProps {
@@ -20,35 +21,34 @@ export const CallStatus: React.FC<CallStatusProps> = ({
   audioStreamActive
 }) => {
   return (
-    <div className="call-status">
-      <div className="call-status-header">
-        <h2>Call Status</h2>
-      </div>
-      
-      <div className="call-status-grid">
-        <div className="status-item">
-          <div className="status-label">Status</div>
-          <div className={`status-value ${callStatus}`}>
+    <div className="call-status-bar">
+      <div className="status-metric-cell">
+        <span className="metric-label">CALL SESSION</span>
+        <div className="metric-value-row">
+          <span className={`status-pill ${callStatus}`}>
+            <span className="pill-dot"></span>
             {callStatus.toUpperCase()}
-          </div>
+          </span>
         </div>
-        
-        <div className="status-item">
-          <div className="status-label">Duration</div>
-          <div className="status-value">{formatDuration(callDuration)}</div>
-        </div>
-        
-        <div className="status-item">
-          <div className="status-label">Caller</div>
-          <div className="status-value">{callerIdentity}</div>
-        </div>
-        
-        <div className="status-item">
-          <div className="status-label">Audio Stream</div>
-          <div className={`status-value ${audioStreamActive ? 'active' : 'inactive'}`}>
-            {audioStreamActive ? 'ACTIVE' : 'INACTIVE'}
-          </div>
-        </div>
+      </div>
+
+      <div className="status-metric-cell">
+        <span className="metric-label">ELAPSED TIME</span>
+        <span className="metric-mono-val">{formatDuration(callDuration)}</span>
+      </div>
+
+      <div className="status-metric-cell caller-cell">
+        <span className="metric-label">CALLER IDENTIFIER</span>
+        <span className={`caller-id-val ${callerIdentity.includes('FLAGGED') ? 'flagged' : ''}`}>
+          {callerIdentity}
+        </span>
+      </div>
+
+      <div className="status-metric-cell">
+        <span className="metric-label">AUDIO CHANNEL</span>
+        <span className={`channel-pill ${audioStreamActive ? 'active' : 'idle'}`}>
+          {audioStreamActive ? 'ACTIVE STREAM' : 'MUTED / INACTIVE'}
+        </span>
       </div>
     </div>
   );

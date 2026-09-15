@@ -1,0 +1,287 @@
+.hero-risk-gauge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem 1rem;
+  position: relative;
+  width: 100%;
+}
+
+.gauge-frame {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-svg {
+  overflow: visible;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.5));
+}
+
+.gauge-tick-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1.5;
+}
+
+.gauge-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-linecap: round;
+}
+
+.gauge-progress {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.85s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease;
+}
+
+/* Dynamic State Colors for the Gauge Progress */
+.gauge-progress.idle {
+  stroke: url(#gaugeGradIdle);
+  opacity: 0.3;
+}
+
+.gauge-progress.low {
+  stroke: url(#gaugeGradLow);
+}
+
+.gauge-progress.medium {
+  stroke: url(#gaugeGradMedium);
+}
+
+.gauge-progress.high {
+  stroke: url(#gaugeGradHigh);
+}
+
+.gauge-progress.critical {
+  stroke: url(#gaugeGradCritical);
+}
+
+/* Center Content */
+.gauge-center-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.gauge-caption {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.gauge-score-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+
+.gauge-score-value {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+  transition: color 0.3s ease;
+}
+
+.hero-risk-gauge-container.low .gauge-score-value {
+  color: #10b981;
+}
+
+.hero-risk-gauge-container.medium .gauge-score-value {
+  color: #f59e0b;
+}
+
+.hero-risk-gauge-container.high .gauge-score-value {
+  color: #f97316;
+}
+
+.hero-risk-gauge-container.critical .gauge-score-value {
+  color: #ef4444;
+}
+
+.gauge-score-denom {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.gauge-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 0.25rem 0.85rem;
+  border-radius: 9999px;
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.badge-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.gauge-badge.idle {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+}
+.gauge-badge.idle .badge-pulse-dot {
+  background: var(--text-muted);
+}
+
+.gauge-badge.low {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #10b981;
+}
+.gauge-badge.low .badge-pulse-dot {
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.gauge-badge.medium {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #f59e0b;
+}
+.gauge-badge.medium .badge-pulse-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 6px #f59e0b;
+}
+
+.gauge-badge.high {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: rgba(249, 115, 22, 0.35);
+  color: #f97316;
+}
+.gauge-badge.high .badge-pulse-dot {
+  background: #f97316;
+  box-shadow: 0 0 6px #f97316;
+}
+
+.gauge-badge.critical {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.45);
+  color: #ef4444;
+  animation: critical-pulse 2s infinite ease-in-out;
+}
+.gauge-badge.critical .badge-pulse-dot {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+@keyframes critical-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 12px 2px rgba(239, 68, 68, 0.2);
+  }
+}
+
+.gauge-subcaption {
+  margin-top: 8px;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* Legend / Scale Bar */
+.gauge-scale-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 380px;
+  margin-top: 1rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  gap: 0.5rem;
+}
+
+.scale-segment {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+  transition: all 0.25s ease;
+}
+
+.scale-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.scale-segment.low .scale-dot { background: #10b981; }
+.scale-segment.medium .scale-dot { background: #f59e0b; }
+.scale-segment.high .scale-dot { background: #f97316; }
+.scale-segment.critical .scale-dot { background: #ef4444; }
+
+.scale-segment.active {
+  opacity: 1;
+  font-weight: 700;
+}
+
+.scale-segment.low.active { color: #10b981; }
+.scale-segment.medium.active { color: #f59e0b; }
+.scale-segment.high.active { color: #f97316; }
+.scale-segment.critical.active { color: #ef4444; }
+
+@media (max-width: 480px) {
+  .gauge-frame {
+    width: 240px;
+    height: 240px;
+  }
+  .gauge-svg {
+    width: 240px;
+    height: 240px;
+  }
+  .gauge-score-value {
+    font-size: 3.2rem;
+  }
+  .gauge-scale-bar {
+    max-width: 320px;
+    font-size: 0.6rem;
+  }
+}

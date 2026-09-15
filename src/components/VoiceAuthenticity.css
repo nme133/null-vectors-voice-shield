@@ -67,6 +67,11 @@
   border-color: rgba(239, 68, 68, 0.5);
 }
 
+.voice-auth-status.insufficient_speech {
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.5);
+}
+
 .voice-auth-details {
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 6px;
@@ -132,15 +137,19 @@
 }
 
 .score-bar-fill.authentic {
-  background-color: var(--status-low);
+  background: var(--status-low);
 }
 
 .score-bar-fill.spoof_suspected {
-  background-color: var(--status-high);
+  background: var(--status-high);
 }
 
 .score-bar-fill.spoof_detected {
-  background-color: var(--status-critical);
+  background: var(--status-critical);
+}
+
+.score-bar-fill.insufficient_speech {
+  background: #38bdf8;
 }
 
 .voice-auth-description {

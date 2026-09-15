@@ -1,32 +1,86 @@
+import React from 'react';
 import './Header.css';
+
+export type NavTab = 'overview' | 'analysis' | 'transcript' | 'events' | 'system' | 'settings';
 
 interface HeaderProps {
   connectionStatus: 'online' | 'offline';
+  activeTab: NavTab;
+  onSelectTab: (tab: NavTab) => void;
+  isMonitoring: boolean;
+  isDemoMode: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ connectionStatus }) => {
+export const Header: React.FC<HeaderProps> = ({
+  connectionStatus,
+  activeTab,
+  onSelectTab,
+  isMonitoring,
+  isDemoMode
+}) => {
+  const tabs: { id: NavTab; label: string }[] = [
+    { id: 'overview', label: 'OVERVIEW' },
+    { id: 'analysis', label: 'ANALYSIS' },
+    { id: 'transcript', label: 'TRANSCRIPT' },
+    { id: 'events', label: 'EVENTS' },
+    { id: 'system', label: 'SYSTEM' },
+    { id: 'settings', label: 'SETTINGS' }
+  ];
+
   return (
-    <header className="header">
-      <div className="header-content">
-        <div className="header-brand">
-          <h1 className="header-title">VoxShield</h1>
-          <p className="header-subtitle">Real-Time Voice Impersonation Detection</p>
+    <header className="app-header">
+      <div className="header-inner">
+        {/* Brand */}
+        <div className="header-brand-block">
+          <div className="brand-logo-mark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2" />
+              <polyline points="2 17 12 22 22 17" />
+              <polyline points="2 12 12 17 22 12" />
+            </svg>
+          </div>
+          <div className="brand-title-column">
+            <div className="brand-name-row">
+              <span className="brand-name">NULL VECTORS</span>
+              <span className="brand-badge">VOICE SHIELD</span>
+            </div>
+            <span className="brand-tagline">AI IMPERSONATION DETECTION SYSTEM • SIH 2026</span>
+          </div>
         </div>
-        <div className="header-status">
-          <div className={`connection-indicator ${connectionStatus}`}>
+
+        {/* Top Navigation Tabs */}
+        <nav className="header-nav" aria-label="Main Navigation">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              className={`nav-tab-btn ${activeTab === t.id ? 'active' : ''}`}
+              onClick={() => onSelectTab(t.id)}
+            >
+              {t.label}
+              {activeTab === t.id && <span className="tab-indicator-line" />}
+            </button>
+          ))}
+        </nav>
+
+        {/* Status Indicators */}
+        <div className="header-status-block">
+          {isDemoMode && (
+            <div className="demo-mode-badge">
+              <span className="demo-dot"></span>
+              DEMO SIMULATION
+            </div>
+          )}
+
+          <div className={`status-pill-badge ${connectionStatus}`}>
             <span className="status-dot"></span>
             <span className="status-text">
-              {connectionStatus === 'online' ? 'SYSTEM ONLINE' : 'SYSTEM OFFLINE'}
+              {connectionStatus === 'online' ? 'BACKEND READY' : 'OFFLINE'}
             </span>
           </div>
-          <div className="mic-indicator">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 1a3 3 0 0 0-3 3v12a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-              <line x1="12" y1="19" x2="12" y2="23"></line>
-              <line x1="8" y1="23" x2="16" y2="23"></line>
-            </svg>
-            <span>Live</span>
+
+          <div className={`mic-pill-badge ${isMonitoring ? 'recording' : 'standby'}`}>
+            <span className="mic-dot"></span>
+            <span>{isMonitoring ? 'INTAKE LIVE' : 'INTAKE IDLE'}</span>
           </div>
         </div>
       </div>
